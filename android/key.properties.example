@@ -1,0 +1,6 @@
+# Copy to key.properties and fill in values from the project lead.
+# key.properties is gitignored — do not commit it.
+storePassword=YOUR_STORE_PASSWORD
+keyPassword=YOUR_KEY_PASSWORD
+keyAlias=ustaad-ai
+storeFile=../ustaad-ai-key.jks

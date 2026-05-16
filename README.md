@@ -27,34 +27,26 @@
 
 **Ustaad AI** is submitted for **Challenge 2 — AI Service Orchestrator for Informal Economy**.
 
-This is an **agentic AI orchestration platform**, not a simple chatbot. It uses a structured multi-agent pipeline built around Google Antigravity principles to autonomously coordinate service discovery, provider matching, booking simulation, and follow-up workflows.
+Ustaad AI is an **agentic AI orchestration platform** built for Pakistan’s informal economy. Instead of functioning as a simple chatbot, it utilizes Google Antigravity multi-agent orchestration workflows to autonomously coordinate service discovery, provider matching, booking simulation, and follow-up workflows.
 
 Users can request local services (electrician, plumber, AC technician, carpenter, etc.) using natural, noisy language in Urdu, Roman Urdu, or English.
+
+> *"Mujhe kal subah G-13 mein AC technician chahiye"*  
+> The AI understands the service type, urgency, location, and seamlessly coordinates the booking workflow.
 
 The system autonomously:
 
 - Extracts structured intent from conversational requests
-- Discovers nearby providers using real or simulated geospatial parameters
+- Discovers nearby providers using deterministic parameters
 - Ranks providers based on distance, rating, and availability
 - Simulates booking workflows and manages conflict handling
 - Automates follow-up and reminder operations
 - Generates execution traces for transparency and reasoning
 
----
+The platform supports **two primary roles**:
 
-## 📖 What is Ustaad AI?
-
-**Ustaad AI** is an Android app built for Pakistan's informal economy, making it easier to connect users with local skilled workers through conversational AI.
-
-Instead of scrolling through listings or making multiple phone calls, users simply describe what they need naturally.
-
-> *"Mujhe kal subah G-13 mein AC technician chahiye"*  
-> The AI understands the service type, urgency, location, and seamlessly coordinates the booking workflow.
-
-The app supports **two roles**:
-
-- 🏠 **Customer** — Describe what you need, get matched with providers, and track service workflows autonomously
-- 🔧 **Provider** — Set up your profile with skills & service area, receive structured customer bookings
+- 🏠 **Customer** — Describe requirements naturally, get matched with providers, and track workflows autonomously
+- 🔧 **Provider** — Configure skills & service areas, receive structured booking requests, and manage availability
 
 ---
 
@@ -328,12 +320,12 @@ Ustaad AI generates structured execution traces to provide full transparency int
 
 The orchestration pipeline logs:
 
-- 🧠 Reasoning steps and confidence scores
-- 🤝 Agent-to-agent handoffs with JSON contracts
-- ⚙️ Action execution and tool calls (Maps API, Gemini)
+- 🧠 Reasoning and confidence scoring
+- 🤝 Agent-to-agent workflow execution
+- ⚙️ Action execution and retries
 - 🔄 Retry & fallback handling
-- 💳 Payment escrow lifecycle events
-- 📋 Booking confirmation and scheduling
+- 📋 Booking and scheduling events
+
 
 ### Agent-Level Trace (Retry / Fallback Flow)
 
@@ -403,14 +395,6 @@ To maintain a scalable, secure, and production-ready system, the architecture is
 - Execution trace logging returned with every API response
 - 100-entry mock provider dataset generated using Google Antigravity (`providers.json`)
 
-### Why the split?
-
-**🔒 Security** — Isolates the Gemini API key, Google Maps API key, and orchestration logic from the client APK.
-
-**🛠️ Maintainability** — Mobile UI developers and AI backend engineers can iterate independently.
-
-**🚀 Deployment Flexibility** — The mobile app runs natively on Android; the orchestration engine runs on Vercel edge infrastructure with Next.js.
-
 ---
 
 ## 🔧 Edge Case Handling
@@ -459,9 +443,6 @@ Urdu script input is supported via Gemini on the backend. The client-side `Inten
 
 **Notifications:**
 Reminder and survey notifications are scheduled locally on-device via `flutter_local_notifications`. No real SMS or push notification infrastructure is connected in this submission.
-
-**Mixed Services:**
-Requests combining multiple services (e.g., "AC repair aur plumber") extract the primary service type based on NLP confidence. A multi-intent parallel workflow splitter is a planned future iteration.
 
 ---
 

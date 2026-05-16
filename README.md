@@ -191,9 +191,19 @@ Dispatches reminders (e.g., T-1 hour) and follow-up surveys to ensure job comple
 
 ---
 
-## 📜 Agent Trace Example
+## 📜 Agent Trace / Logs
 
-Ustaad AI generates execution traces to provide transparency into its autonomous decision-making.
+Ustaad AI generates structured execution traces to provide transparency into autonomous decision-making, agent interactions, and workflow execution.
+
+The orchestration pipeline logs:
+
+- 🧠 Reasoning steps
+- 🤝 Agent-to-agent interactions
+- ⚙️ Action execution workflows
+- 🔄 Retry & fallback handling
+- 📋 Booking lifecycle events
+
+### Example Execution Trace
 
 ```text
 [Intent Agent]
@@ -224,6 +234,12 @@ Ref: BK-9842X
 [Reminder Agent]
 Reminder scheduled successfully for T-1 hour.
 ```
+<img width="792" height="700" alt="image" src="https://github.com/user-attachments/assets/d626596c-bf47-47dd-9c41-d0e9b43a04b3" />
+
+🔗 For additional orchestration logs and backend workflow traces, visit:
+
+[https://karigar-ai-nu.vercel.app/](https://karigar-ai-nu.vercel.app/)
+
 
 ---
 ## 🏢 Multi-Repository Architecture

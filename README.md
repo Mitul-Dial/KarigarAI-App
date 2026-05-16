@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/app\_logo.png" alt="Ustaad AI Logo" width="120" />
+  <img src="assets/app_logo.png" alt="Ustaad AI Logo" width="120" />
 </p>
 
 <h1 align="center">Ustaad AI</h1>

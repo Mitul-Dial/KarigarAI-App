@@ -22,7 +22,7 @@
 
 ## 🏆 Google Antigravity Hackathon Submission
 
-**Ustaad AI** (powered by **Ustaad AI**) is submitted for **Challenge 2 — AI Service Orchestrator for Informal Economy**.
+**Ustaad AI** (powered by **Google Gemini + an Antigravity-inspired orchestration layer**) is submitted for **Challenge 2 — AI Service Orchestrator for Informal Economy**.
 
 This is an **agentic AI orchestration platform**, not a simple chatbot. It utilizes Antigravity-inspired multi-agent workflows to perform autonomous service coordination. Users can request local services (electrician, plumber, AC technician, carpenter, etc.) using natural, noisy language in Urdu, Roman Urdu, or English.
 

@@ -17,7 +17,7 @@
   <img src="https://img.shields.io/badge/Google%20Gemini-AI-4285F4?logo=google" alt="Gemini AI" />
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android" alt="Android" />
 </p>
-
+-
 ---
 
 ## 📖 What is Ustaad AI?

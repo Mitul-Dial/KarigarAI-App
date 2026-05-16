@@ -1,30 +1,13 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:ustaad_ai_app/main.dart';
+import 'package:ustaad_ai_app/models/service_intent.dart';
+import 'package:ustaad_ai_app/services/intent_parser_service.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const UstaadAiApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('intent merges service location time', () {
+    final a = IntentParserService.instance.parseMessage('Mujhe plumber chahiye');
+    final b = IntentParserService.instance.parseMessage('F-8 Islamabad kal subah 10 baje');
+    final merged = a.merge(b);
+    expect(merged.service, 'Plumber');
+    expect(merged.isComplete, true);
   });
 }

@@ -50,6 +50,10 @@ Pushing to this repo does **not** deploy the backend. Only the **Vercel-connecte
 | `lib/config.dart` | Backend base URL |
 | `lib/services/google_auth_service.dart` | Google Sign-In |
 | `lib/services/chat_repository.dart` | Firestore `chats/{uid}/messages` |
+| `lib/services/requests_repository.dart` | Service requests (from Haazir-style UX) |
+| `lib/services/preferences_repository.dart` | Language & location settings |
+| `lib/widgets/requests_panel.dart` | Requests tab UI |
+| `lib/widgets/settings_panel.dart` | Settings tab UI |
 | `lib/firebase_options.dart` | Firebase client config (generated) |
 | `android/app/google-services.json` | Firebase Android config — get from team lead or Firebase Console |
 | `android/app/build.gradle.kts` | Android SDK, package name, signing |

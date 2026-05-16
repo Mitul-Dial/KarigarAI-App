@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'services/google_auth_service.dart';
-
-const kBlue = Color(0xFF1A6BFF);
-const kBlueMid = Color(0xFF5B9BFF);
+import 'theme/app_colors.dart';
+import 'widgets/app_logo.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -72,10 +70,7 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 SizedBox(height: size.height * 0.15),
                 Container(
-                  width: 100,
-                  height: 100,
                   decoration: BoxDecoration(
-                    color: Colors.white,
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
@@ -85,16 +80,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ],
                   ),
-                  child: const Center(
-                    child: Text(
-                      'U',
-                      style: TextStyle(
-                        color: kBlue,
-                        fontSize: 48,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
+                  child: const AppLogo(size: 100),
                 ),
                 const SizedBox(height: 24),
                 const Text(

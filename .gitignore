@@ -53,3 +53,6 @@ app.*.map.json
 .env
 .env.*
 !.env.example
+
+# Supabase keys (copy from supabase_secrets.example.dart)
+/lib/config/supabase_secrets.dart

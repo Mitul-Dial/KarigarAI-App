@@ -27,7 +27,7 @@
 
 **Ustaad AI** is submitted for **Challenge 2 — AI Service Orchestrator for Informal Economy**.
 
-This is an **agentic AI orchestration platform**, not a simple chatbot. It utilizes Antigravity-inspired multi-agent workflows to autonomously coordinate service discovery, provider matching, booking simulation, and follow-up workflows.
+This is an **agentic AI orchestration platform**, not a simple chatbot. It utilizes Google Antigravity multi-agent orchestration workflows to autonomously coordinate service discovery, provider matching, booking simulation, and follow-up workflows.
 
 Users can request local services (electrician, plumber, AC technician, carpenter, etc.) using natural, noisy language in Urdu, Roman Urdu, or English.
 
@@ -257,7 +257,7 @@ To maintain a scalable, secure, and production-ready system, the architecture is
 
 ### Backend Repository
 
-- Antigravity-inspired orchestration workflow
+- Google Antigravity orchestration workflow
 - Agent workflows (Intent, Ranking, Booking)
 - Booking simulation and execution tracing
 - Gemini API integration
@@ -278,7 +278,7 @@ The mobile app runs natively on Android, while the orchestration engine leverage
 ---
 ## ⚙️ How Google Antigravity Is Used
 
-Ustaad AI is built entirely around the core concepts of action-oriented orchestration. By adopting Antigravity-inspired design patterns, we transform LLMs from passive responders into active executors.
+Ustaad AI is built entirely around the core concepts of action-oriented orchestration. Built directly around Google Antigravity design principles, we transform LLMs from passive responders into active executors.
 
 Our workflow strictly follows:
 

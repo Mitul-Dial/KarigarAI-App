@@ -54,5 +54,13 @@ app.*.map.json
 .env.*
 !.env.example
 
+# Firebase config files (contain API keys)
+/android/app/google-services.json
+/lib/firebase_options.dart
+/firebase.json
+
 # Supabase keys (copy from supabase_secrets.example.dart)
 /lib/config/supabase_secrets.dart
+
+# Android build artifacts
+/android/build/

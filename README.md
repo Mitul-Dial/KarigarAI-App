@@ -166,18 +166,6 @@ flutter build apk --release
 
 ---
 
-## 🔒 Security
-
-Sensitive configuration files are excluded from version control via `.gitignore`:
-
-- `google-services.json` — Firebase API keys
-- `firebase_options.dart` — Firebase platform configs
-- `supabase_secrets.dart` — Supabase credentials (see `supabase_secrets.example.dart`)
-- `key.properties` & `*.jks` — Android signing keys (see `key.properties.example`)
-- `.env` — Environment variables
-
----
-
 ## 🔗 Related Repositories
 
 | Repository | Description | Deployment |
@@ -187,12 +175,6 @@ Sensitive configuration files are excluded from version control via `.gitignore`
 
 ---
 
-## 📄 License
-
-This project was built as a university project for educational purposes.
-
----
-
 <p align="center">
-  Built with ❤️ using Flutter, Firebase & Google Gemini
+  A <b>Mitul Dial's</b> Project
 </p>

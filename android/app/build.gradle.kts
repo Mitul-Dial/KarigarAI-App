@@ -54,6 +54,9 @@ android {
 
     buildTypes {
         release {
+            // Faster, smaller disk use on low-space PCs (skip R8 shrink step).
+            isMinifyEnabled = false
+            isShrinkResources = false
             if (keystorePropertiesFile.exists()) {
                 signingConfig = signingConfigs.getByName("release")
             } else {

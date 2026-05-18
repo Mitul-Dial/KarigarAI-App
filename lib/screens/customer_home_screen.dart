@@ -9,6 +9,7 @@ import '../models/user_profile.dart';
 import '../models/user_preferences.dart';
 import '../models/user_role.dart';
 import '../models/chat_session.dart';
+import '../services/chat_api_service.dart';
 import '../services/intent_parser_service.dart';
 import '../services/notification_service.dart';
 import '../services/preferences_repository.dart';
@@ -53,6 +54,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   String? _sessionId;
   List<Map<String, dynamic>> _messages = [];
   ServiceIntent _intent = const ServiceIntent();
+  String? _lastClarificationMessage;
   List<String> _rejectedIds = [];
   bool _isLoading = false;
   List<ServiceRequest> _requests = [];
@@ -133,6 +135,47 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     _sessions = await SessionRepository.instance.listSessions(uid);
   }
 
+  String _userConversationHistory({bool includeLatest = true}) {
+    final lines = <String>[];
+    final limit = includeLatest ? _messages.length : _messages.length - 1;
+    for (var i = 0; i < limit; i++) {
+      final m = _messages[i];
+      if (m['role'] == 'user') {
+        lines.add('User: ${m['text']}');
+      }
+    }
+    return lines.join('\n');
+  }
+
+  Future<({ServiceIntent intent, bool fromServer})> _parseIntent(String message) async {
+    final history = _userConversationHistory(includeLatest: false);
+    try {
+      final api = await ChatApiService.instance.parseIntent(
+        message: message,
+        history: history.isEmpty ? null : history,
+        defaultLocation: _settings.defaultLocation,
+      );
+      _lastClarificationMessage = api.clarificationNeeded ? api.clarificationMessage : null;
+      return (
+        intent: ServiceIntent(
+          service: api.service,
+          location: api.location,
+          time: api.time,
+        ),
+        fromServer: true,
+      );
+    } catch (_) {
+      _lastClarificationMessage = null;
+      return (
+        intent: IntentParserService.instance.parseMessage(
+          message,
+          defaultLocation: _settings.defaultLocation,
+        ),
+        fromServer: false,
+      );
+    }
+  }
+
   String _resolveInput(String text) {
     final t = text.trim();
     final lower = t.toLowerCase();
@@ -165,10 +208,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
       text: trimmed,
     );
 
-    final parsed = IntentParserService.instance.parseMessage(
-      trimmed,
-      defaultLocation: _settings.defaultLocation,
-    );
+    final parseResult = await _parseIntent(trimmed);
 
     final canStartNew = await RequestsRepository.instance.sessionCanStartNewBooking(
       customerUid: uid,
@@ -176,18 +216,24 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
     );
 
     ServiceIntent merged;
-    if (canStartNew &&
-        IntentParserService.instance.shouldResetIntent(trimmed, parsed, _intent)) {
-      merged = const ServiceIntent().merge(parsed);
+    if (parseResult.fromServer) {
+      merged = parseResult.intent;
+    } else if (canStartNew &&
+        IntentParserService.instance.shouldResetIntent(
+          trimmed,
+          parseResult.intent,
+          _intent,
+        )) {
+      merged = const ServiceIntent().merge(parseResult.intent);
     } else {
-      merged = _intent.merge(parsed);
+      merged = _intent.merge(parseResult.intent);
     }
 
     if ((merged.location == null || merged.location!.isEmpty) &&
         _settings.defaultLocation.isNotEmpty &&
         merged.service != null &&
         merged.time != null &&
-        parsed.location == null) {
+        parseResult.intent.location == null) {
       merged = merged.merge(ServiceIntent(location: _settings.defaultLocation));
     }
 
@@ -205,11 +251,13 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
 
     if (!_intent.isComplete) {
       final missing = _intent.nextMissingField!;
-      final reply = IntentParserService.instance.promptForMissing(
-        missing,
-        hintFromCode(_settings.language.code),
-        current: _intent,
-      );
+      final reply = _lastClarificationMessage ??
+          IntentParserService.instance.promptForMissing(
+            missing,
+            hintFromCode(_settings.language.code),
+            current: _intent,
+          );
+      _lastClarificationMessage = null;
       await _addAgent(reply);
       setState(() => _isLoading = false);
       return;

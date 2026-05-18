@@ -226,24 +226,52 @@ class IntentParserService {
     final lower = _normalize(t);
     if (_looksLikeTimeOnly(lower)) return null;
 
+    // "Ferozpur my" / "G-13 mein" — location before postposition
+    final postposition = RegExp(
+      r'(.+?)\s+(?:mein|main|mai|me|my|par|pe)\s*$',
+      caseSensitive: false,
+    ).firstMatch(t);
+    if (postposition != null) {
+      final seg = _stripFillerWords(postposition.group(1)!.trim());
+      if (seg.length >= 2 && !_looksLikeTimeOnly(_normalize(seg))) return seg;
+    }
+
     final locTag = RegExp(
       r'(?:location|jagah|area|address|pata|at|in|par|pe|near)\s*[:\-]?\s*(.+)$',
       caseSensitive: false,
     ).firstMatch(t);
     if (locTag != null) {
-      final seg = locTag.group(1)!.trim();
+      final seg = _stripFillerWords(locTag.group(1)!.trim());
       if (seg.isNotEmpty && !_looksLikeTimeOnly(_normalize(seg))) return seg;
     }
 
     final parts = t.split(RegExp(r'[,;]')).map((e) => e.trim()).where((e) => e.isNotEmpty);
     for (final part in parts) {
-      if (!_looksLikeTimeOnly(_normalize(part)) && part.length >= 3) {
-        return part;
+      final cleaned = _stripFillerWords(part);
+      if (cleaned.length >= 2 &&
+          !_looksLikeTimeOnly(_normalize(cleaned)) &&
+          !_looksLikeTimeOnly(_normalize(part))) {
+        return cleaned;
       }
     }
 
-    if (t.length >= 3 && !_looksLikeTimeOnly(lower)) return t;
+    final stripped = _stripFillerWords(t);
+    if (stripped.length >= 2 && !_looksLikeTimeOnly(_normalize(stripped))) {
+      return stripped;
+    }
     return null;
+  }
+
+  String _stripFillerWords(String text) {
+    var r = text;
+    const fillers = [
+      'mujhy', 'mujhe', 'muje', 'chahye', 'chahiye', 'chaheye', 'chaiye',
+      'please', 'bhejo', 'bhej', 'service', 'ka', 'ki', 'ke', 'ko',
+    ];
+    for (final f in fillers) {
+      r = r.replaceAll(RegExp('\\b$f\\b', caseSensitive: false), ' ');
+    }
+    return r.replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 
   String? _fallbackLocation(String trimmed, String lower) {

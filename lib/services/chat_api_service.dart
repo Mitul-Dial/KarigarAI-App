@@ -28,9 +28,72 @@ class ChatApiResponse {
   }
 }
 
+class IntentApiResponse {
+  IntentApiResponse({
+    this.service,
+    this.location,
+    this.time,
+    this.clarificationNeeded = false,
+    this.clarificationMessage,
+    this.confidence,
+  });
+
+  final String? service;
+  final String? location;
+  final String? time;
+  final bool clarificationNeeded;
+  final String? clarificationMessage;
+  final double? confidence;
+
+  factory IntentApiResponse.fromJson(Map<String, dynamic> data) {
+    return IntentApiResponse(
+      service: data['service'] as String?,
+      location: data['location'] as String?,
+      time: data['time'] as String?,
+      clarificationNeeded: data['clarification_needed'] as bool? ?? false,
+      clarificationMessage: data['clarification_message'] as String?,
+      confidence: (data['confidence'] as num?)?.toDouble(),
+    );
+  }
+}
+
 class ChatApiService {
   ChatApiService._();
   static final ChatApiService instance = ChatApiService._();
+
+  /// Server-side Gemini intent parse (uses Vercel backend fixes).
+  Future<IntentApiResponse> parseIntent({
+    required String message,
+    String? history,
+    String? defaultLocation,
+  }) async {
+    final url = Uri.parse('${AppConfig.apiBaseUrl}/api/intent');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'message': message,
+        if (history != null && history.trim().isNotEmpty) 'history': history.trim(),
+        if (defaultLocation != null && defaultLocation.trim().isNotEmpty)
+          'defaultLocation': defaultLocation.trim(),
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      String detail = response.body;
+      try {
+        final err = jsonDecode(response.body) as Map<String, dynamic>;
+        detail = err['error']?.toString() ?? detail;
+      } catch (_) {}
+      throw HttpException(
+        'Intent API ${response.statusCode}: $detail',
+        statusCode: response.statusCode,
+      );
+    }
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    return IntentApiResponse.fromJson(data);
+  }
 
   Future<ChatApiResponse> send({
     required String message,

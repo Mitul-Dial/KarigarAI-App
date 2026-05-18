@@ -64,3 +64,7 @@ app.*.map.json
 
 # Android build artifacts
 /android/build/
+
+# JVM heap dumps and local temp clones
+*.hprof
+tempRepo/

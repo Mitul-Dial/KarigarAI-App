@@ -45,12 +45,12 @@ class _AuthScreenState extends State<AuthScreen> {
             child: IgnorePointer(
               child: SizedBox(
                 width: size.width,
-                height: size.height,
+                height: size.height * 0.72,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
-                      center: const Alignment(0.0, -0.2),
-                      radius: 1.8,
+                      center: Alignment.topLeft,
+                      radius: 1.4,
                       colors: [
                         kBlueMid.withValues(alpha: 0.95),
                         kBlue.withValues(alpha: 0.80),

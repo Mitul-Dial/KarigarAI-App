@@ -22,8 +22,9 @@ import '../widgets/provider_match_card.dart';
 import '../widgets/requests_panel.dart';
 import '../widgets/settings_panel.dart';
 import '../widgets/profile_avatar.dart';
+import '../widgets/customer_chat_list_panel.dart';
 
-enum _Tab { assistant, requests, settings }
+enum _Tab { chats, assistant, requests, settings }
 
 const _introAgent =
     'Assalamu Alaikum! Main Ustaad AI hoon. Batayein — kaunsi service chahiye, kahan, aur kab?';
@@ -45,7 +46,7 @@ class CustomerHomeScreen extends StatefulWidget {
 }
 
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
-  _Tab _tab = _Tab.assistant;
+  _Tab _tab = _Tab.chats;
   final _controller = TextEditingController();
   final _scrollController = ScrollController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -491,7 +492,8 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
       decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: kBorder))),
       child: Row(
         children: [
-          _tabBtn('Assistant', _Tab.assistant, Icons.chat_bubble_outline),
+          _tabBtn('Chats', _Tab.chats, Icons.forum_outlined),
+          _tabBtn('Assistant', _Tab.assistant, Icons.smart_toy_outlined),
           _tabBtn('Requests', _Tab.requests, Icons.assignment_outlined, badge: _requests.length),
           _tabBtn('Settings', _Tab.settings, Icons.settings_outlined),
         ],
@@ -524,10 +526,22 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   }
 
   Widget _body() {
+    if (_tab == _Tab.chats) {
+      return CustomerChatListPanel(
+        requests: _requests,
+        customerName: _settings.displayName.isNotEmpty
+            ? _settings.displayName
+            : 'Customer',
+        onAssistantTap: () => setState(() => _tab = _Tab.assistant),
+      );
+    }
     if (_tab == _Tab.requests) {
       return RequestsPanel(
         requests: _requests,
         isProvider: false,
+        currentUserName: _settings.displayName.isNotEmpty
+            ? _settings.displayName
+            : 'Customer',
         onVerifyComplete: (r) => RequestsRepository.instance.updateStatus(r.id, 'COMPLETED'),
         onRate: (r, stars, fb) async {
           await RequestsRepository.instance.updateStatus(

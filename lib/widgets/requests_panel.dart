@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../models/service_request.dart';
+import '../screens/direct_chat_screen.dart';
 import '../theme/app_colors.dart';
 
 class RequestsPanel extends StatelessWidget {
@@ -7,6 +9,7 @@ class RequestsPanel extends StatelessWidget {
     super.key,
     required this.requests,
     required this.isProvider,
+    this.currentUserName = '',
     this.onVerifyComplete,
     this.onRate,
     this.onAccept,
@@ -18,6 +21,7 @@ class RequestsPanel extends StatelessWidget {
 
   final List<ServiceRequest> requests;
   final bool isProvider;
+  final String currentUserName;
   final void Function(ServiceRequest req)? onVerifyComplete;
   final void Function(ServiceRequest req, int stars, String feedback)? onRate;
   final void Function(ServiceRequest req)? onAccept;
@@ -57,6 +61,7 @@ class RequestsPanel extends StatelessWidget {
       itemBuilder: (context, index) => _RequestCard(
         request: requests[index],
         isProvider: isProvider,
+        currentUserName: currentUserName,
         onVerifyComplete: onVerifyComplete,
         onRate: onRate,
         onAccept: onAccept,
@@ -73,6 +78,7 @@ class _RequestCard extends StatefulWidget {
   const _RequestCard({
     required this.request,
     required this.isProvider,
+    this.currentUserName = '',
     this.onVerifyComplete,
     this.onRate,
     this.onAccept,
@@ -84,6 +90,7 @@ class _RequestCard extends StatefulWidget {
 
   final ServiceRequest request;
   final bool isProvider;
+  final String currentUserName;
   final void Function(ServiceRequest req)? onVerifyComplete;
   final void Function(ServiceRequest req, int stars, String feedback)? onRate;
   final void Function(ServiceRequest req)? onAccept;
@@ -271,23 +278,26 @@ class _RequestCardState extends State<_RequestCard> {
 
   List<Widget> _actions() {
     final w = <Widget>[];
-    if (isProvider && r.status == 'PENDING') {
+
+    // Chat button for active requests (after acceptance)
+    final _chatStatuses = {'ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'COMPLETION_REQUESTED'};
+    if (_chatStatuses.contains(r.status) && r.providerUid != null) {
+      final user = FirebaseAuth.instance.currentUser;
+      final rowBtns = <Widget>[_chatBtn(context, user)];
+      if (isProvider && r.status == 'ACCEPTED')
+        rowBtns.add(_btn('Move', kBlue, () => widget.onMove?.call(r)));
+      if (isProvider && r.status == 'ON_THE_WAY')
+        rowBtns.add(_btn('Arrived', kGoldenBeige, () => widget.onArrived?.call(r)));
+      if (isProvider && r.status == 'ARRIVED')
+        rowBtns.add(_btn('Complete job', kBlue, () => widget.onComplete?.call(r)));
+      if (!isProvider && r.status == 'COMPLETION_REQUESTED')
+        rowBtns.add(_btn('Verify & complete', kGoldenBeige, () => widget.onVerifyComplete?.call(r)));
+      w.add(_btnRow(rowBtns));
+    } else if (isProvider && r.status == 'PENDING') {
       w.add(_btnRow([
         _btn('Accept', kGoldenBeige, () => widget.onAccept?.call(r)),
         _btn('Decline', kTextMuted, () => widget.onDecline?.call(r), outline: true),
       ]));
-    }
-    if (isProvider && r.status == 'ACCEPTED') {
-      w.add(_btn('Move', kBlue, () => widget.onMove?.call(r)));
-    }
-    if (isProvider && r.status == 'ON_THE_WAY') {
-      w.add(_btn('Arrived', kGoldenBeige, () => widget.onArrived?.call(r)));
-    }
-    if (isProvider && r.status == 'ARRIVED') {
-      w.add(_btn('Complete job', kBlue, () => widget.onComplete?.call(r)));
-    }
-    if (!isProvider && r.status == 'COMPLETION_REQUESTED') {
-      w.add(_btn('Verify & complete', kGoldenBeige, () => widget.onVerifyComplete?.call(r)));
     }
     if (!isProvider && r.status == 'COMPLETED') {
       w.add(const SizedBox(height: 10));
@@ -329,6 +339,44 @@ class _RequestCardState extends State<_RequestCard> {
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Row(children: children.map((c) => Expanded(child: c)).toList()),
+    );
+  }
+
+  Widget _chatBtn(BuildContext context, User? user) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, right: 4),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => DirectChatScreen(
+                  requestId: r.id,
+                  currentUid: user?.uid ?? '',
+                  currentUserName: widget.currentUserName.isNotEmpty
+                      ? widget.currentUserName
+                      : (isProvider
+                          ? (r.providerName ?? 'Provider')
+                          : (r.customerName ?? 'Customer')),
+                  otherUserName: isProvider
+                      ? (r.customerName ?? 'Customer')
+                      : (r.providerName ?? 'Provider'),
+                  serviceName: r.service,
+                  isProvider: isProvider,
+                ),
+              ),
+            );
+          },
+          icon: const Icon(Icons.chat_outlined, size: 16),
+          label: const Text('Chat', style: TextStyle(fontWeight: FontWeight.w700)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isProvider ? kGoldenBeige : kBlue,
+            foregroundColor: kWhite,
+          ),
+        ),
+      ),
     );
   }
 

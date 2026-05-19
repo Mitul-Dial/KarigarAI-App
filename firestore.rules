@@ -25,6 +25,18 @@ service cloud.firestore {
         || resource.data.providerUid == request.auth.uid
         || (resource.data.status == 'PENDING' && request.resource.data.providerUid == request.auth.uid)
       );
+
+      // Direct chat messages between customer and provider
+      match /chat_messages/{messageId} {
+        allow read: if request.auth != null && (
+          get(/databases/$(database)/documents/requests/$(requestId)).data.customerUid == request.auth.uid
+          || get(/databases/$(database)/documents/requests/$(requestId)).data.providerUid == request.auth.uid
+        );
+        allow create: if request.auth != null && (
+          get(/databases/$(database)/documents/requests/$(requestId)).data.customerUid == request.auth.uid
+          || get(/databases/$(database)/documents/requests/$(requestId)).data.providerUid == request.auth.uid
+        ) && request.resource.data.senderUid == request.auth.uid;
+      }
     }
   }
 }

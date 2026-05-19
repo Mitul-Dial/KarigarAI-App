@@ -133,7 +133,10 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
       backgroundColor: kWhite,
       appBar: AppBar(
         backgroundColor: kGoldenBeige.withValues(alpha: 0.12),
-        title: const Text('Provider Portal', style: TextStyle(fontWeight: FontWeight.w700)),
+        title: const Text(
+          'Provider Portal',
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
+        ),
         actions: [
           Text(_online ? 'Online' : 'Offline', style: TextStyle(fontSize: 12, color: _online ? kGoldenBeige : kTextMuted)),
           Switch(value: _online, activeThumbColor: kGoldenBeige, onChanged: _setOnline),

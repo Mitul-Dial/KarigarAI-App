@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 /// Brand logo — not used in chat "U" avatar bubbles.
 class AppLogo extends StatelessWidget {
@@ -18,7 +19,7 @@ class AppLogo extends StatelessWidget {
         width: size,
         height: size,
         decoration: const BoxDecoration(
-          color: Color(0xFF1A6BFF),
+          color: kBlue,
           shape: BoxShape.circle,
         ),
         child: const Center(

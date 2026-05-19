@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
-const kBlue = Color(0xFF1A6BFF);
-const kBlueDark = Color(0xFF0A4FD6);
-const kBlueLight = Color(0xFFE8F0FF);
-const kBlueMid = Color(0xFF5B9BFF);
+const kBlue = Color(0xFF4B6382);       // Palette: Slate Blue
+const kBlueDark = Color(0xFF071739);   // Palette: Deep Navy
+const kBlueLight = Color(0xFFCDD5DB);  // Palette: Silver Blue
+const kBlueMid = Color(0xFFA4B5C4);    // Palette: Light Gray Blue
 const kWhite = Colors.white;
-const kText = Color(0xFF0D1B3E);
-const kTextMuted = Color(0xFF8A9BB8);
-const kSurface = Color(0xFFF4F7FF);
-const kBorder = Color(0xFFE2E9FF);
-const kSuccess = Color(0xFF22C55E);
-const kWarning = Color(0xFFF59E0B);
+const kText = Color(0xFF071739);       // Palette: Deep Navy
+const kTextMuted = Color(0xFF8B9DB0);  // Slightly darker than A4B5C4 for better contrast
+const kSurface = Color(0xFFF2F5F8);    // Cool tint surface matching the blues
+const kBorder = Color(0xFFCDD5DB);     // Palette: Silver Blue
+const kSuccess = Color(0xFF22C55E);    // Semantic success
+const kGoldenBeige = Color(0xFFA68868); // Palette: Warm Bronze (Provider Main)
+const kWarning = Color(0xFFE3C39D);    // Palette: Soft Wheat

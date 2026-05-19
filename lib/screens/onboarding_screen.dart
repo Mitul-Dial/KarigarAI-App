@@ -58,7 +58,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               const SizedBox(height: 20),
               const Text(
                 'Assalamu Alaikum!',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: kBlue),
+                style: TextStyle(fontFamily: 'Flaviotte', fontSize: 26, fontWeight: FontWeight.w800, color: kBlue),
               ),
               const SizedBox(height: 8),
               const Text(

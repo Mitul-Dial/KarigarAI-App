@@ -45,12 +45,12 @@ class _AuthScreenState extends State<AuthScreen> {
             child: IgnorePointer(
               child: SizedBox(
                 width: size.width,
-                height: size.height * 0.72,
+                height: size.height,
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     gradient: RadialGradient(
-                      center: Alignment.topLeft,
-                      radius: 1.4,
+                      center: const Alignment(0.0, -0.2),
+                      radius: 1.8,
                       colors: [
                         kBlueMid.withValues(alpha: 0.95),
                         kBlue.withValues(alpha: 0.80),
@@ -86,6 +86,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 const Text(
                   'Ustaad AI',
                   style: TextStyle(
+                    fontFamily: 'Flaviotte',
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
@@ -93,12 +94,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Text(
+                const Text(
                   'Har kaam ka ustaad',
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.white.withValues(alpha: 0.85),
-                    fontWeight: FontWeight.w400,
+                    fontFamily: 'ClashDisplay',
+                    fontSize: 18,
+                    color: kGoldenBeige,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const Spacer(),
@@ -113,13 +115,13 @@ class _AuthScreenState extends State<AuthScreen> {
                             onPressed: _signInWithGoogle,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
-                              foregroundColor: const Color(0xFF0D1B3E),
+                              foregroundColor: kText,
                               elevation: 3,
                               shadowColor: kBlue.withValues(alpha: 0.2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                                 side: const BorderSide(
-                                  color: Color(0xFFE2E9FF),
+                                  color: kBorder,
                                 ),
                               ),
                             ),
@@ -131,7 +133,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                   height: 28,
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                      color: const Color(0xFFE2E9FF),
+                                      color: kBorder,
                                     ),
                                     borderRadius: BorderRadius.circular(6),
                                   ),

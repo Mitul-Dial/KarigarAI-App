@@ -37,7 +37,7 @@ class UstaadAiApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: kWhite,
-        fontFamily: 'Roboto',
+        fontFamily: 'ClashDisplay',
         colorScheme: ColorScheme.fromSeed(seedColor: kBlue),
       ),
       home: StreamBuilder<User?>(

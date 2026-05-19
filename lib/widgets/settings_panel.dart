@@ -191,7 +191,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
         ),
         if (widget.isProvider) ...[
           const SizedBox(height: 16),
-          const Text('Default labour type', style: TextStyle(fontWeight: FontWeight.w700, color: kSuccess)),
+          const Text('Default labour type', style: TextStyle(fontWeight: FontWeight.w700, color: kGoldenBeige)),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             initialValue: kProviderServiceTypes.contains(_providerService)
@@ -213,7 +213,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
           child: ElevatedButton(
             onPressed: _saving ? null : _save,
             style: ElevatedButton.styleFrom(
-              backgroundColor: widget.isProvider ? kSuccess : kBlue,
+              backgroundColor: widget.isProvider ? kGoldenBeige : kBlue,
               foregroundColor: kWhite,
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),

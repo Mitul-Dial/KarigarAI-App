@@ -118,7 +118,7 @@ class _RequestCardState extends State<_RequestCard> {
         return kBlueMid;
       case 'COMPLETED':
       case 'RATED':
-        return kSuccess;
+        return kGoldenBeige;
       case 'DECLINED':
         return Colors.red.shade300;
       default:
@@ -248,7 +248,7 @@ class _RequestCardState extends State<_RequestCard> {
           if (r.price.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 6),
-              child: Text(r.price, style: const TextStyle(fontWeight: FontWeight.w700, color: kSuccess)),
+              child: Text(r.price, style: const TextStyle(fontWeight: FontWeight.w700, color: kGoldenBeige)),
             ),
           const SizedBox(height: 10),
           Container(
@@ -273,7 +273,7 @@ class _RequestCardState extends State<_RequestCard> {
     final w = <Widget>[];
     if (isProvider && r.status == 'PENDING') {
       w.add(_btnRow([
-        _btn('Accept', kSuccess, () => widget.onAccept?.call(r)),
+        _btn('Accept', kGoldenBeige, () => widget.onAccept?.call(r)),
         _btn('Decline', kTextMuted, () => widget.onDecline?.call(r), outline: true),
       ]));
     }
@@ -281,13 +281,13 @@ class _RequestCardState extends State<_RequestCard> {
       w.add(_btn('Move', kBlue, () => widget.onMove?.call(r)));
     }
     if (isProvider && r.status == 'ON_THE_WAY') {
-      w.add(_btn('Arrived', kSuccess, () => widget.onArrived?.call(r)));
+      w.add(_btn('Arrived', kGoldenBeige, () => widget.onArrived?.call(r)));
     }
     if (isProvider && r.status == 'ARRIVED') {
       w.add(_btn('Complete job', kBlue, () => widget.onComplete?.call(r)));
     }
     if (!isProvider && r.status == 'COMPLETION_REQUESTED') {
-      w.add(_btn('Verify & complete', kSuccess, () => widget.onVerifyComplete?.call(r)));
+      w.add(_btn('Verify & complete', kGoldenBeige, () => widget.onVerifyComplete?.call(r)));
     }
     if (!isProvider && r.status == 'COMPLETED') {
       w.add(const SizedBox(height: 10));

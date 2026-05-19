@@ -29,7 +29,7 @@ class ProviderMatchCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: kBlueLight.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: booked ? kSuccess : kBorder, width: booked ? 2 : 1),
+        border: Border.all(color: booked ? kGoldenBeige : kBorder, width: booked ? 2 : 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +38,7 @@ class ProviderMatchCard extends StatelessWidget {
             booked ? 'Request sent' : 'Labour available',
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              color: booked ? kSuccess : kText,
+              color: booked ? kGoldenBeige : kText,
               fontSize: 13,
             ),
           ),
@@ -54,7 +54,7 @@ class ProviderMatchCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             'Est. ~$price PKR',
-            style: const TextStyle(color: kSuccess, fontWeight: FontWeight.w700, fontSize: 13),
+            style: const TextStyle(color: kGoldenBeige, fontWeight: FontWeight.w700, fontSize: 13),
           ),
           if (!booked) ...[
             const SizedBox(height: 10),
@@ -64,7 +64,7 @@ class ProviderMatchCard extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: onBook,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: kSuccess,
+                      backgroundColor: kGoldenBeige,
                       foregroundColor: kWhite,
                       padding: const EdgeInsets.symmetric(vertical: 10),
                     ),
@@ -85,7 +85,7 @@ class ProviderMatchCard extends StatelessWidget {
               padding: EdgeInsets.only(top: 8),
               child: Text(
                 'Waiting for provider to accept…',
-                style: TextStyle(fontSize: 12, color: kSuccess, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 12, color: kGoldenBeige, fontWeight: FontWeight.w600),
               ),
             ),
         ],

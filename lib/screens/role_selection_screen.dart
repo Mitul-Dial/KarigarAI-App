@@ -29,12 +29,13 @@ class RoleSelectionScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 24),
-              const AppLogo(size: 88),
+              const Center(child: AppLogo(size: 88)),
               const SizedBox(height: 16),
               const Text(
                 'Ustaad AI',
                 textAlign: TextAlign.center,
                 style: TextStyle(
+                  fontFamily: 'Flaviotte',
                   fontSize: 32,
                   fontWeight: FontWeight.w800,
                   color: kBlue,
@@ -69,7 +70,7 @@ class RoleSelectionScreen extends StatelessWidget {
                 icon: Icons.handyman_outlined,
                 title: 'Provider',
                 subtitle: 'Accept jobs & manage requests',
-                color: kSuccess,
+                color: kGoldenBeige,
                 onTap: () => _pick(context, UserRole.provider),
               ),
               const Spacer(flex: 2),

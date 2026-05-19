@@ -11,8 +11,9 @@ import '../services/requests_repository.dart';
 import '../theme/app_colors.dart';
 import '../widgets/requests_panel.dart';
 import '../widgets/settings_panel.dart';
+import '../widgets/provider_chat_list_panel.dart';
 
-enum _PTab { requests, settings }
+enum _PTab { chat, requests, settings }
 
 class ProviderHomeScreen extends StatefulWidget {
   const ProviderHomeScreen({
@@ -153,6 +154,7 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
           ),
           Row(
             children: [
+              Expanded(child: _tabChip('Chat', _PTab.chat)),
               Expanded(child: _tabChip('Requests (${_allRequests.length})', _PTab.requests)),
               Expanded(child: _tabChip('Settings', _PTab.settings)),
             ],
@@ -176,7 +178,14 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
                 key: ValueKey<int>(_tab.index),
                 width: double.infinity,
                 height: double.infinity,
-                child: _tab == _PTab.settings
+                child: _tab == _PTab.chat
+                    ? ProviderChatListPanel(
+                        requests: _allRequests,
+                        providerName: _settings.displayName.isNotEmpty
+                            ? _settings.displayName
+                            : FirebaseAuth.instance.currentUser?.displayName ?? 'Provider',
+                      )
+                    : _tab == _PTab.settings
                     ? SettingsPanel(
                         settings: _settings,
                         email: FirebaseAuth.instance.currentUser?.email,
@@ -187,6 +196,9 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
                         ? RequestsPanel(
                             requests: _allRequests,
                             isProvider: true,
+                            currentUserName: _settings.displayName.isNotEmpty
+                                ? _settings.displayName
+                                : FirebaseAuth.instance.currentUser?.displayName ?? 'Provider',
                             onAccept: _accept,
                             onDecline: (r) => RequestsRepository.instance.decline(r.id),
                             onMove: (r) => _status(r, 'ON_THE_WAY'),

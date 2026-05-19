@@ -72,16 +72,14 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   Future<void> _bootstrap() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     _settings = await PreferencesRepository.instance.loadRole(uid, UserRole.customer);
+    // Always start a new chat session when the app opens
+    _sessionId = await SessionRepository.instance.createSession(uid);
     _sessions = await SessionRepository.instance.listSessions(uid);
-    if (_sessions.isEmpty) {
-      _sessionId = await SessionRepository.instance.createSession(uid);
-      setState(() {
-        _messages = [{'role': 'agent', 'text': _introAgent}];
-      });
-    } else {
-      _sessionId = _sessions.first.id;
-      await _loadSession(_sessionId!);
-    }
+    setState(() {
+      _messages = [{'role': 'agent', 'text': _introAgent}];
+      _intent = const ServiceIntent();
+      _rejectedIds = [];
+    });
     _reqSub = RequestsRepository.instance.watchCustomerRequests(uid).listen((list) {
       if (!_requestsListenerReady) {
         _requestsListenerReady = true;
@@ -445,7 +443,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
         backgroundColor: kWhite,
         elevation: 0,
         iconTheme: const IconThemeData(color: kText),
-        title: const Text('Ustaad AI', style: TextStyle(color: kText, fontWeight: FontWeight.w700)),
+        title: const Text('Ustaad AI', style: TextStyle(fontFamily: 'Flaviotte', color: kText, fontWeight: FontWeight.w700)),
         actions: [
           TextButton(
             onPressed: widget.onSwitchRole,
@@ -456,8 +454,33 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
       body: Column(
         children: [
           _tabBar(),
-          Expanded(child: _body()),
-          if (_tab == _Tab.assistant) _inputBar(),
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0.05, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: SizedBox(
+                key: ValueKey<int>(_tab.index),
+                width: double.infinity,
+                height: double.infinity,
+                child: _body(),
+              ),
+            ),
+          ),
+          AnimatedSize(
+            duration: const Duration(milliseconds: 300),
+            child: _tab == _Tab.assistant ? _inputBar() : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
@@ -627,6 +650,7 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
       child: SafeArea(
         child: Column(
           children: [
+            const SizedBox(height: 32),
             ListTile(
               leading: ProfileAvatar(
                 imageUrl: _settings.photoUrl.isNotEmpty
@@ -669,6 +693,24 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
                 },
               ),
             ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.settings_outlined, color: kText),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+                setState(() => _tab = _Tab.settings);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text('Logout', style: TextStyle(color: Colors.red)),
+              onTap: () async {
+                Navigator.pop(context);
+                await FirebaseAuth.instance.signOut();
+              },
+            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

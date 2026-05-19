@@ -131,11 +131,11 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
     return Scaffold(
       backgroundColor: kWhite,
       appBar: AppBar(
-        backgroundColor: kSuccess.withValues(alpha: 0.12),
+        backgroundColor: kGoldenBeige.withValues(alpha: 0.12),
         title: const Text('Provider Portal', style: TextStyle(fontWeight: FontWeight.w700)),
         actions: [
-          Text(_online ? 'Online' : 'Offline', style: TextStyle(fontSize: 12, color: _online ? kSuccess : kTextMuted)),
-          Switch(value: _online, activeThumbColor: kSuccess, onChanged: _setOnline),
+          Text(_online ? 'Online' : 'Offline', style: TextStyle(fontSize: 12, color: _online ? kGoldenBeige : kTextMuted)),
+          Switch(value: _online, activeThumbColor: kGoldenBeige, onChanged: _setOnline),
           TextButton(onPressed: widget.onSwitchRole, child: const Text('Customer', style: TextStyle(fontSize: 11))),
         ],
       ),
@@ -145,7 +145,7 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                const Icon(Icons.handyman, color: kSuccess),
+                const Icon(Icons.handyman, color: kGoldenBeige),
                 const SizedBox(width: 8),
                 Text(_settings.providerServiceType, style: const TextStyle(fontWeight: FontWeight.w700)),
               ],
@@ -158,24 +158,44 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
             ],
           ),
           Expanded(
-            child: _tab == _PTab.settings
-                ? SettingsPanel(
-                    settings: _settings,
-                    email: FirebaseAuth.instance.currentUser?.email,
-                    isProvider: true,
-                    onSave: _saveSettings,
-                  )
-                : _online
-                    ? RequestsPanel(
-                        requests: _allRequests,
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: SlideTransition(
+                    position: Tween<Offset>(
+                      begin: const Offset(0.05, 0),
+                      end: Offset.zero,
+                    ).animate(animation),
+                    child: child,
+                  ),
+                );
+              },
+              child: SizedBox(
+                key: ValueKey<int>(_tab.index),
+                width: double.infinity,
+                height: double.infinity,
+                child: _tab == _PTab.settings
+                    ? SettingsPanel(
+                        settings: _settings,
+                        email: FirebaseAuth.instance.currentUser?.email,
                         isProvider: true,
-                        onAccept: _accept,
-                        onDecline: (r) => RequestsRepository.instance.decline(r.id),
-                        onMove: (r) => _status(r, 'ON_THE_WAY'),
-                        onArrived: (r) => _status(r, 'ARRIVED'),
-                        onComplete: (r) => _status(r, 'COMPLETION_REQUESTED'),
+                        onSave: _saveSettings,
                       )
-                    : const Center(child: Text('Go online to receive requests')),
+                    : _online
+                        ? RequestsPanel(
+                            requests: _allRequests,
+                            isProvider: true,
+                            onAccept: _accept,
+                            onDecline: (r) => RequestsRepository.instance.decline(r.id),
+                            onMove: (r) => _status(r, 'ON_THE_WAY'),
+                            onArrived: (r) => _status(r, 'ARRIVED'),
+                            onComplete: (r) => _status(r, 'COMPLETION_REQUESTED'),
+                          )
+                        : const Center(child: Text('Go online to receive requests')),
+              ),
+            ),
           ),
         ],
       ),
@@ -189,9 +209,9 @@ class _ProviderHomeScreenState extends State<ProviderHomeScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: on ? kSuccess : Colors.transparent, width: 2)),
+          border: Border(bottom: BorderSide(color: on ? kGoldenBeige : Colors.transparent, width: 2)),
         ),
-        child: Text(label, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700, color: on ? kSuccess : kTextMuted)),
+        child: Text(label, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.w700, color: on ? kGoldenBeige : kTextMuted)),
       ),
     );
   }

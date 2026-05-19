@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>AI-Powered Skilled Labour Orchestration Platform</strong><br/>
-  Autonomous service coordination for Pakistan's informal economy.
+  Autonomous service coordination for Pakistan's informal economy
 </p>
 
 <p align="center">

@@ -22,6 +22,17 @@ class ProviderMatchCard extends StatelessWidget {
     final distance = provider['distanceKm'] ?? '?';
     final price = provider['priceEstimatePkr'] ?? provider['basePrice'] ?? '—';
     final slots = provider['availableSlots'] as List?;
+    final days = provider['availableDays'] as List?;
+
+    // Build schedule display
+    String scheduleText = '';
+    if (days != null && days.isNotEmpty) {
+      scheduleText += days.join(', ');
+    }
+    if (slots != null && slots.isNotEmpty) {
+      if (scheduleText.isNotEmpty) scheduleText += ' • ';
+      scheduleText += slots.join(', ');
+    }
 
     return Container(
       margin: const EdgeInsets.only(top: 10),
@@ -46,9 +57,9 @@ class ProviderMatchCard extends StatelessWidget {
           Text(name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: kText)),
           const SizedBox(height: 4),
           Text('⭐ $rating • ${distance}km', style: const TextStyle(color: kTextMuted, fontSize: 12)),
-          if (slots != null && slots.isNotEmpty)
+          if (scheduleText.isNotEmpty)
             Text(
-              'Slots: ${slots.join(', ')}',
+              'Schedule: $scheduleText',
               style: const TextStyle(color: kTextMuted, fontSize: 11),
             ),
           const SizedBox(height: 4),

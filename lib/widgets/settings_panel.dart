@@ -43,6 +43,11 @@ class _SettingsPanelState extends State<SettingsPanel> {
   Uint8List? _localPhotoBytes;
   bool _saving = false;
 
+  // Day-of-week toggle state
+  late List<bool> _selectedDays; // Mon=0, Tue=1, ..., Sun=6
+
+  static const _dayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +61,13 @@ class _SettingsPanelState extends State<SettingsPanel> {
     _slotsCtrl = TextEditingController(text: s.availableSlots);
     _providerService = s.providerServiceType;
     _photoUrl = s.photoUrl;
+
+    // Initialize day selection from the stored availableDays
+    final dayNumbers = s.dayNumbers;
+    _selectedDays = List.generate(7, (i) {
+      if (dayNumbers.isEmpty) return i < 5; // Default Mon-Fri
+      return dayNumbers.contains(i + 1); // dayNumbers is 1-indexed
+    });
   }
 
   @override
@@ -67,6 +79,38 @@ class _SettingsPanelState extends State<SettingsPanel> {
     _dobCtrl.dispose();
     _slotsCtrl.dispose();
     super.dispose();
+  }
+
+  /// Build the compact day range string from selected toggles.
+  /// E.g. [true, true, true, true, true, false, false] → "Mon-Fri"
+  /// E.g. [true, true, true, false, true, true, false] → "Mon-Wed, Fri-Sat"
+  String _buildDayRangeString() {
+    final ranges = <String>[];
+    int? rangeStart;
+
+    for (var i = 0; i < 7; i++) {
+      if (_selectedDays[i]) {
+        rangeStart ??= i;
+      } else {
+        if (rangeStart != null) {
+          if (rangeStart == i - 1) {
+            ranges.add(_dayLabels[rangeStart]);
+          } else {
+            ranges.add('${_dayLabels[rangeStart]}-${_dayLabels[i - 1]}');
+          }
+          rangeStart = null;
+        }
+      }
+    }
+    // Close any trailing range
+    if (rangeStart != null) {
+      if (rangeStart == 6) {
+        ranges.add(_dayLabels[6]);
+      } else {
+        ranges.add('${_dayLabels[rangeStart]}-${_dayLabels[6]}');
+      }
+    }
+    return ranges.isEmpty ? 'Mon-Fri' : ranges.join(', ');
   }
 
   Future<void> _pickPhoto() async {
@@ -123,6 +167,7 @@ class _SettingsPanelState extends State<SettingsPanel> {
         dateOfBirth: _dobCtrl.text.trim(),
         providerServiceType: _providerService,
         availableSlots: _slotsCtrl.text.trim(),
+        availableDays: _buildDayRangeString(),
         isProviderOnline: widget.settings.isProviderOnline,
       );
       setState(() {
@@ -200,11 +245,25 @@ class _SettingsPanelState extends State<SettingsPanel> {
             items: kProviderServiceTypes.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
             onChanged: (v) => setState(() => _providerService = v ?? _providerService),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
           _field(
-            'Available timings (comma separated)',
+            'Available timings (intervals)',
             _slotsCtrl,
-            hint: 'Today 9 AM, Today 2 PM, Tomorrow 10 AM',
+            hint: '9am-1pm, 3pm-6pm',
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Use intervals like 8am-12pm. Separate multiple with commas.',
+            style: TextStyle(fontSize: 10, color: kTextMuted),
+          ),
+          const SizedBox(height: 16),
+          const Text('Available days', style: TextStyle(fontWeight: FontWeight.w700, color: kGoldenBeige)),
+          const SizedBox(height: 8),
+          _dayToggleRow(),
+          const SizedBox(height: 6),
+          Text(
+            _buildDayRangeString(),
+            style: const TextStyle(fontSize: 12, color: kTextMuted, fontStyle: FontStyle.italic),
           ),
         ],
         const SizedBox(height: 24),
@@ -232,6 +291,42 @@ class _SettingsPanelState extends State<SettingsPanel> {
           ),
         ),
       ],
+    );
+  }
+
+  /// Row of 7 day toggle chips (Mon–Sun) with color feedback.
+  Widget _dayToggleRow() {
+    return Wrap(
+      spacing: 4,
+      runSpacing: 4,
+      children: List.generate(7, (i) {
+        final selected = _selectedDays[i];
+        return GestureDetector(
+          onTap: () => setState(() => _selectedDays[i] = !_selectedDays[i]),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 44,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: selected ? kGoldenBeige : kSurface,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: selected ? kGoldenBeige : kBorder,
+                width: selected ? 1.5 : 1,
+              ),
+            ),
+            child: Text(
+              _dayLabels[i],
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: selected ? kWhite : kTextMuted,
+              ),
+            ),
+          ),
+        );
+      }),
     );
   }
 

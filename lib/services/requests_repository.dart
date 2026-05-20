@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/labour_provider.dart';
 import '../models/service_intent.dart';
 import '../models/service_request.dart';
@@ -164,6 +165,12 @@ class RequestsRepository {
     final snap = await _col.doc(requestId).get();
     if (!snap.exists) return;
     final req = ServiceRequest.fromMap(requestId, snap.data()!);
+
+    // ── When rated, update the provider's original rating ──
+    if (status == 'RATED' && rating != null) {
+      await _applyRatingToProvider(req, rating);
+    }
+
     final chatMsg = customerChatMessageForStatus(status);
     if (chatMsg != null &&
         req.sessionId != null &&
@@ -174,6 +181,72 @@ class RequestsRepository {
         role: 'agent',
         text: chatMsg,
       );
+    }
+  }
+
+  /// Applies a customer rating to the provider's stored rating using a
+  /// weighted average: newRating = (oldRating * count + customerRating) / (count + 1)
+  ///
+  /// This affects the provider's rating partially — not a full replacement,
+  /// but a gradual shift. A provider with 20 ratings won't be drastically
+  /// changed by a single review, but a new provider will be more affected.
+  Future<void> _applyRatingToProvider(ServiceRequest req, int customerRating) async {
+    try {
+      final provSnapshot = req.providerSnapshot;
+      if (provSnapshot == null) return;
+
+      final providerId = provSnapshot['id'] as String?;
+      if (providerId == null || providerId.isEmpty) return;
+
+      // Normalize customer rating from 1-10 scale to 1-5 scale
+      final normalizedRating = (customerRating / 2.0).clamp(1.0, 5.0);
+
+      final provDoc = FirebaseFirestore.instance
+          .collection('providers')
+          .doc(providerId);
+
+      final provSnap = await provDoc.get();
+      if (provSnap.exists) {
+        // Provider exists in Firestore — use their stored rating
+        final provData = provSnap.data()!;
+        final oldRating = (provData['rating'] as num?)?.toDouble() ?? 4.5;
+        final oldCount = (provData['ratingCount'] as num?)?.toInt() ?? 10;
+
+        // Weighted average: gradually shifts the rating
+        final newCount = oldCount + 1;
+        final newRating = ((oldRating * oldCount) + normalizedRating) / newCount;
+
+        await provDoc.update({
+          'rating': double.parse(newRating.toStringAsFixed(2)),
+          'ratingCount': newCount,
+        });
+
+        debugPrint(
+          '[Rating] Provider $providerId: $oldRating (${oldCount} reviews) → '
+          '${newRating.toStringAsFixed(2)} (${newCount} reviews) '
+          '[customer gave $customerRating/10 = ${normalizedRating.toStringAsFixed(1)}/5]',
+        );
+      } else {
+        // Provider not in Firestore providers collection — try updating the
+        // providerSnapshot within the request document itself for local tracking
+        final oldRating = (provSnapshot['rating'] as num?)?.toDouble() ?? 4.5;
+        final oldCount = (provSnapshot['ratingCount'] as num?)?.toInt() ?? 5;
+        final newCount = oldCount + 1;
+        final newRating = ((oldRating * oldCount) + normalizedRating) / newCount;
+
+        await _col.doc(req.id).update({
+          'providerSnapshot.rating': double.parse(newRating.toStringAsFixed(2)),
+          'providerSnapshot.ratingCount': newCount,
+        });
+
+        debugPrint(
+          '[Rating] Provider $providerId (local): $oldRating → '
+          '${newRating.toStringAsFixed(2)} [customer gave $customerRating/10]',
+        );
+      }
+    } catch (e) {
+      // Rating update is non-critical — don't block the status update
+      debugPrint('[Rating] Failed to update provider rating: $e');
     }
   }
 

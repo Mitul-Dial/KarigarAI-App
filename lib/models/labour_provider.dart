@@ -7,6 +7,8 @@ class LabourProvider {
     required this.distanceKm,
     required this.basePrice,
     this.availableSlots = const [],
+    this.availableDays = const [],
+    this.ratingCount = 0,
   });
 
   final String id;
@@ -15,9 +17,21 @@ class LabourProvider {
   final double rating;
   final double distanceKm;
   final int basePrice;
+  /// Time intervals like ["9am-1pm", "3pm-6pm"]
   final List<String> availableSlots;
+  /// Day ranges like ["Mon-Fri"] or ["Mon-Wed", "Sat"]
+  final List<String> availableDays;
+  /// How many ratings have been submitted (for weighted average calculation)
+  final int ratingCount;
 
   int get priceEstimatePkr => basePrice;
+
+  /// Human-readable schedule string
+  String get scheduleDisplay {
+    final days = availableDays.isNotEmpty ? availableDays.join(', ') : 'All days';
+    final slots = availableSlots.isNotEmpty ? availableSlots.join(', ') : 'Flexible';
+    return '$days • $slots';
+  }
 
   Map<String, dynamic> toMap() => {
         'id': id,
@@ -28,6 +42,8 @@ class LabourProvider {
         'basePrice': basePrice,
         'priceEstimatePkr': priceEstimatePkr,
         'availableSlots': availableSlots,
+        'availableDays': availableDays,
+        'ratingCount': ratingCount,
       };
 
   factory LabourProvider.fromMap(Map<String, dynamic> data) {
@@ -44,6 +60,11 @@ class LabourProvider {
               ?.map((e) => e.toString())
               .toList() ??
           const [],
+      availableDays: (data['availableDays'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
+      ratingCount: (data['ratingCount'] as num?)?.toInt() ?? 0,
     );
   }
 }

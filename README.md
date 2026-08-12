@@ -23,7 +23,7 @@
 
 ---
 
-## 🏆 Google Antigravity Hackathon Submission
+## Google Antigravity Hackathon Submission
 
 **Ustaad AI** is submitted for **Challenge 2 — AI Service Orchestrator for Informal Economy**.
 
@@ -45,30 +45,30 @@ The system autonomously:
 
 The platform supports **two primary roles**:
 
-- 🏠 **Customer** — Describe requirements naturally, get matched with providers, and track workflows autonomously
-- 🔧 **Provider** — Configure skills & service areas, receive structured booking requests, and manage availability
+- **Customer** — Describe requirements naturally, get matched with providers, and track workflows autonomously
+- **Provider** — Configure skills & service areas, receive structured booking requests, and manage availability
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-| | Feature | Description |
-|---|---------|-------------|
-| 🤖 | **Agentic AI Orchestration** | Conversational UI backed by multi-agent workflows (Gemini + Antigravity) |
-| 🌐 | **Multilingual Understanding** | Supports Urdu, English, and Roman Urdu |
-| 🧠 | **Smart Intent Parsing** | Extracts service category, urgency, budget & location from natural language |
-| 🎯 | **Provider Ranking & Matching** | Finds and ranks providers based on skills, location & availability |
-| 📅 | **Booking Simulation** | Simulates booking workflows with retry logic and conflict handling |
-| 📋 | **Workflow Tracing** | Transparent execution logs showing reasoning and workflow state |
-| 🗺️ | **Interactive Map** | Pick service location using OpenStreetMap |
-| 👤 | **Profile & Role Management** | Upload avatar, manage preferences, configure provider skills |
-| 🔔 | **Automated Notifications** | Reminder agent schedules booking reminders and updates |
-| 💳 | **Escrow Payment Simulation** | 20% deposit held in simulated escrow, released on job completion |
-| 🎨 | **Onboarding Flow** | Smooth onboarding with role selection and preference setup |
+|  Feature | Description |
+|----------|-------------|
+| **Agentic AI Orchestration** | Conversational UI backed by multi-agent workflows (Gemini + Antigravity) |
+| **Multilingual Understanding** | Supports Urdu, English, and Roman Urdu |
+| **Smart Intent Parsing** | Extracts service category, urgency, budget & location from natural language |
+| **Provider Ranking & Matching** | Finds and ranks providers based on skills, location & availability |
+| **Booking Simulation** | Simulates booking workflows with retry logic and conflict handling |
+| **Workflow Tracing** | Transparent execution logs showing reasoning and workflow state |
+| **Interactive Map** | Pick service location using OpenStreetMap |
+| **Profile & Role Management** | Upload avatar, manage preferences, configure provider skills |
+| **Automated Notifications** | Reminder agent schedules booking reminders and updates |
+| **Escrow Payment Simulation** | 20% deposit held in simulated escrow, released on job completion |
+| **Onboarding Flow** | Smooth onboarding with role selection and preference setup |
 
 ---
 
-## 🏗️ How It Works (Multi-Agent Architecture)
+## How It Works (Multi-Agent Architecture)
 
 Ustaad AI leverages a structured orchestration pipeline, moving from natural language input to action-oriented execution. Instead of a monolithic script, the system functions as a sequential pipeline of autonomous agents. Each agent receives structured input, performs isolated reasoning, and passes a strict JSON contract to the next agent. The orchestrator maintains a global trace logger that captures every decision, confidence score, and fallback execution.
 
@@ -95,15 +95,15 @@ Ustaad AI leverages a structured orchestration pipeline, moving from natural lan
                 │       + Gemini 2.5 Flash         │
                 │       (Hosted on Vercel)         │
                 ├──────────────────────────────────┤
-                │ 🔐 Auth Layer                    │
-                │ 🧭 Orchestrator (DAG Controller) │
-                │ 🧠 Intent Agent                  │
-                │ 🔍 Discovery Agent               │
-                │ 📊 Ranking Agent                 │
-                │ 📅 Booking Agent                 │
-                │ 🔔 Reminder + Notification Agent │
-                │ 💳 Payment (Escrow) Layer        │
-                │ 📍 Location Layer                │
+                │    Auth Layer                    │
+                │    Orchestrator (DAG Controller) │
+                │    Intent Agent                  │
+                │    Discovery Agent               │
+                │    Ranking Agent                 │
+                │    Booking Agent                 │
+                │    Reminder + Notification Agent │
+                │    Payment (Escrow) Layer        │
+                │    Location Layer                │
                 └──────────────────────────────────┘
                                │
                                ▼
@@ -121,7 +121,7 @@ The app communicates with a **backend API** deployed on Vercel that connects to 
 
 ---
 
-## ⚙️ How Google Antigravity Is Used
+## How Google Antigravity Is Used
 
 Antigravity is the backbone of Ustaad AI's autonomous execution. The core orchestration is implemented in `lib/antigravity.ts` via the `AntigravityWorkflow` class, which acts as a multi-step directed acyclic graph (DAG) controller. By structuring the orchestration as a DAG, context continuity is ensured — each agent's output becomes the next agent's validated input, and the shared `TraceLog` provides end-to-end visibility across the entire workflow.
 
@@ -153,7 +153,7 @@ Input
 
 ---
 
-## 🧠 Agent Workflow
+## Agent Workflow
 
 The Brain Layer of Ustaad AI coordinates service fulfillment through five distinct agents:
 
@@ -301,7 +301,7 @@ Automates the complete post-booking lifecycle. After a confirmed booking, two ev
 
 ---
 
-## 🔄 End-to-End Workflow Example
+## End-to-End Workflow Example
 
 1. **User:** "Plumber near me today"
 2. **Intent Agent:** Parses `{ service: "plumber", time: "today", urgency: "medium" }` with confidence 0.91.
@@ -314,17 +314,17 @@ Automates the complete post-booking lifecycle. After a confirmed booking, two ev
 
 ---
 
-## 📜 Agent Trace / Logs
+## Agent Trace / Logs
 
 Ustaad AI generates structured execution traces to provide full transparency into autonomous decision-making, agent interactions, and workflow execution. Every layer — Auth, Orchestrator, Agent, Payment, Booking, Location — writes timestamped entries to a shared `traces[]` array returned with every API response.
 
 The orchestration pipeline logs:
 
-- 🧠 Reasoning and confidence scoring
-- 🤝 Agent-to-agent workflow execution
-- ⚙️ Action execution and retries
-- 🔄 Retry & fallback handling
-- 📋 Booking and scheduling events
+-  Reasoning and confidence scoring
+-  Agent-to-agent workflow execution
+-  Action execution and retries
+-  Retry & fallback handling
+-  Booking and scheduling events
 
 
 ### Agent-Level Trace (Retry / Fallback Flow)
@@ -371,7 +371,7 @@ The production `/api/orchestrate` endpoint returns a richer trace with layer tag
 
 ---
 
-## 🏢 Multi-Repository Architecture
+## Multi-Repository Architecture
 
 To maintain a scalable, secure, and production-ready system, the architecture is split across two repositories:
 
@@ -397,7 +397,7 @@ To maintain a scalable, secure, and production-ready system, the architecture is
 
 ---
 
-## 🔧 Edge Case Handling
+## Edge Case Handling
 
 The following edge cases are all implemented and visible in execution traces:
 
@@ -421,7 +421,7 @@ The following edge cases are all implemented and visible in execution traces:
 
 ---
 
-## 📋 Assumptions & Limitations
+## Assumptions & Limitations
 
 **Provider Data:**
 The backend uses a dataset of 100 mock providers covering Islamabad and Rawalpindi, generated using Google Antigravity (`providers.json`). Each record includes service category, real-area coordinates, rating, available time slots, base price, cost-per-km, and spoken languages. The Flutter app additionally uses a smaller hardcoded catalog in `provider_matcher_service.dart` for fast client-side matching. Real-world provider onboarding and live availability are outside the scope of this submission.
@@ -446,7 +446,7 @@ Reminder and survey notifications are scheduled locally on-device via `flutter_l
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
@@ -463,7 +463,7 @@ Reminder and survey notifications are scheduled locally on-device via `flutter_l
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 lib/
@@ -516,7 +516,7 @@ lib/
 
 ---
 
-## 🚀 Build & Run
+## Build & Run
 
 ```bash
 # Clone the repo
@@ -538,7 +538,7 @@ flutter build apk --release
 
 ---
 
-## 🔗 Related Repositories
+## Related Repositories
 
 | Repository | Description | Deployment |
 |-----------|-------------|------------|
@@ -547,7 +547,7 @@ flutter build apk --release
 
 ---
 
-## 👥 Team Members
+## Team Members
 
 - Mitul Dial
 - Muhammad Raqib Shakil

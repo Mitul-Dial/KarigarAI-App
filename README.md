@@ -49,10 +49,11 @@ The platform supports **two primary roles**:
 - **Provider** — Configure skills & service areas, receive structured booking requests, and manage availability
 
 ---
+<centre>
 <img width="216" height="480" alt="image" src="https://github.com/user-attachments/assets/06d4643a-1212-42f1-afdc-76e17bd2ee47" />
 <img width="216" height="480" alt="image" src="https://github.com/user-attachments/assets/a7ca864d-0090-4973-961a-830889871372" />
 <img width="216" height="480" alt="image" src="https://github.com/user-attachments/assets/fae8079e-de4e-4e8e-99e7-874618d6ac7f" />
-
+</centre>
 
 ## Key Features
 
